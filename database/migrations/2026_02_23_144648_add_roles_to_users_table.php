@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->boolean('is_admin')->default(false);
+            $table->boolean('is_banned')->default(false);
+            $table->integer('reputation')->default(0);
         });
 
     }

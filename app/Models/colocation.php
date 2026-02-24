@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class colocation extends Model
-{
+class Colocation extends Model
+{   
+    protected $fillable = ['name', 'status'];
+
     public function users()
     {
         return $this->belongsToMany(User::class)

@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 class InvitationController extends Controller
 {
     public function store(Request $request)
-    {   
-        
+    {
+
         ///validation inputs
         $request->validate([
             'email' => ['required', 'email'],
@@ -26,7 +26,7 @@ class InvitationController extends Controller
             ->wherePivot('role', 'owner')
             ->wherePivotNull('left_at')
             ->first();
-        
+
 
         //check colocation if exist
         if (!$colocation) {
@@ -94,13 +94,26 @@ class InvitationController extends Controller
         }
 
         //Create invitation
-        Invitation::create([
+        $invitation = Invitation::create([
             'colocation_id' => $colocation->id,
             'invited_by'     => $user->id,
             'email'          => $email,
             'token'          => Str::random(40),
         ]);
 
-        return back()->with('success', 'Invitation sent successfully.');
+        $inviteUrl = route('invitations.accept', $invitation->token);
+        
+        return back()->with([
+            'success' => 'Invitation created successfully.',
+            'invite_link' => $inviteUrl,
+        ]);
+    }
+
+    public function showAccept($token)
+    {
+        $invitation = Invitation::where('token', $token)->first();
+        dd($invitation);
+
+        return view('colocations.invitationShow');
     }
 }

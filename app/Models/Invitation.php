@@ -9,6 +9,7 @@ class Invitation extends Model
     protected $fillable = [
         'colocation_id',
         'invited_id',
+        'invited_by',
         'email',
         'token',
         'accepted_at',

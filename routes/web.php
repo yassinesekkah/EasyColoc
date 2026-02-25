@@ -25,7 +25,10 @@ Route::middleware(['auth', 'banned'])->group(function () {
 
     //Owner send Invitation
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
-
+    ///user open Invitation
+    Route::get('/invitations/accept/{token}', [InvitationController::class, 'showAccept'])->name('invitations.accept');
+    ////User confirm Invitation
+    Route::post('/invitations/accept/{token}', [InvitationController::class, 'accept'])->name('invitations.process');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

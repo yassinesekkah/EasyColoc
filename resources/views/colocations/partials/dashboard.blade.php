@@ -1,4 +1,4 @@
-<div x-data="{ open: false }">
+<div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
     <div class="min-h-screen bg-gray-50 font-sans antialiased">
 
         <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -40,6 +40,24 @@
                 </div>
                 {{-- @endif --}}
             </div>
+
+            @if (session('invite_link'))
+                <div class="mt-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <p class="text-sm text-green-700 mb-2">
+                        Invitation link generated:
+                    </p>
+
+                    <div class="flex items-center gap-2">
+                        <input type="text" value="{{ session('invite_link') }}" readonly
+                            class="w-full px-3 py-2 text-sm border rounded-lg bg-white">
+
+                        <button onclick="navigator.clipboard.writeText('{{ session('invite_link') }}')"
+                            class="px-3 py-2 bg-green-600 text-white text-sm rounded-lg">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">

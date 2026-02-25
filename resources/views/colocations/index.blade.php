@@ -1,5 +1,9 @@
 <x-app-layout>
-
+@if(session('error'))
+    <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">
+        {{ session('error') }}
+    </div>
+@endif
 @if($activeColocation)
     @include('colocations.partials.dashboard')
 

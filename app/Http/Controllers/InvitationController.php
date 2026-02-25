@@ -11,7 +11,6 @@ class InvitationController extends Controller
 {
     public function store(Request $request)
     {
-
         ///validation inputs
         $request->validate([
             'email' => ['required', 'email'],
@@ -102,18 +101,83 @@ class InvitationController extends Controller
         ]);
 
         $inviteUrl = route('invitations.accept', $invitation->token);
-        
+
         return back()->with([
             'success' => 'Invitation created successfully.',
             'invite_link' => $inviteUrl,
         ]);
     }
 
+
     public function showAccept($token)
     {
         $invitation = Invitation::where('token', $token)->first();
-        dd($invitation);
 
-        return view('colocations.invitationShow');
+        if (!$invitation) {
+            abort(404);
+        }
+
+        ///already accepted
+        if ($invitation->accepted_at) {
+            return redirect()->route('colocations.index')
+                ->with('message', 'This invitation has already been accepted.');
+        }
+
+        if ($invitation->email !== auth()->user()->email) {
+            return redirect()->route('colocations.index')
+                ->with('error', 'You are not authorized to access this invitation.');
+        }
+
+        return view('colocations.invitationShow', compact('invitation'));
+    }
+
+
+    public function accept($token)
+    {
+        $invitation = Invitation::where('token', $token)->first();
+        
+        if (!$invitation) {
+            abort(404);
+        }
+
+        //check wach deja accepted 
+        if ($invitation->accepted_at) {
+            return redirect()->route('colocations.index')
+                ->with('error', 'This invitation has already been accepted.');
+        }
+
+        $user = auth()->user();
+
+        ///check nafs email limsiftin lih invitation
+        $invitationEmail = $invitation->email;
+        $userEmail = $user->email;
+
+        if($invitationEmail !== $userEmail){
+            return redirect()->route('colocations.index')
+                    ->with('error', 'You are not authorized to accept this invitation.');
+        }
+
+        ///check wach user 3ando active colocation
+        $hasActive = $user->colocations()
+                ->wherePivotNull('left_at')
+                ->exists();
+        
+        if($hasActive){
+            return redirect()->route('colocations.index')
+                    ->with('error', 'You already belong to an active colocation.');
+        }
+
+        ///attach user
+        $invitation->colocation->users()->attach($user->id, [
+            'role' => 'member',
+        ]);
+
+        //Mark invitation as accepted
+        $invitation->update([
+            'accepted_at' => now(),
+        ]);
+
+        return redirect()->route('colocations.index')
+            ->with('success', 'You have successfully joined the colocation.');
     }
 }

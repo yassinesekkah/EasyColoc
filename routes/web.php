@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,14 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
 
+    //Owner send Invitation
+    Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');
+    ///user open Invitation
+    Route::get('/invitations/accept/{token}', [InvitationController::class, 'showAccept'])->name('invitations.accept');
+    ////User confirm Invitation
+    Route::post('/invitations/accept/{token}', [InvitationController::class, 'accept'])->name('invitations.process');
+
+    Route::get('/invitations/accept/{token}', [InvitationController::class, 'showAccept'])->name('invitations.accept');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

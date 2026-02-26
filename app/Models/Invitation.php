@@ -12,6 +12,7 @@ class Invitation extends Model
         'invited_by',
         'email',
         'token',
+        'status',
         'accepted_at',
     ];
 

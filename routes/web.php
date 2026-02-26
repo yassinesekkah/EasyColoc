@@ -29,7 +29,9 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/invitations/accept/{token}', [InvitationController::class, 'showAccept'])->name('invitations.accept');
     ////User confirm Invitation
     Route::post('/invitations/accept/{token}', [InvitationController::class, 'accept'])->name('invitations.process');
-    
+    // user cancel invitation
+    Route::patch('/invitations/{token}/refuse', [InvitationController::class, 'refuse'])->name('invitations.refuse');
+
 });
 
 require __DIR__ . '/auth.php';

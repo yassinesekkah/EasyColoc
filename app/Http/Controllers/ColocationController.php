@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreColocationRequest;
 use App\Models\colocation;
 use App\Models\Colocation as ModelsColocation;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
 
 class ColocationController extends Controller
@@ -62,5 +63,34 @@ class ColocationController extends Controller
 
         return redirect()->route('colocations.index')
             ->with('success', 'Colocation created successfully');
+    }
+
+    public function leave(Colocation $colocation)
+    {
+        $user = auth()->user();
+
+        $membership = $user->colocations()
+            ->where('colocation_id', $colocation->id)
+            ->wherePivotNull('left_at')
+            ->first();
+
+
+        if (!$membership) {
+            abort(404);
+        }
+
+        /// nman3o owner mn leave colocation
+        if ($membership->pivot->role === 'owner') {
+            ///khaliha haka daba hta nraj3o nkamloha mnin n9ado l calcul
+            return redirect()->back()
+                ->with('error', 'Owner cannot leave the colocation.');
+        };
+
+        $user->colocations()->updateExistingPivot($colocation->id, [
+            'left_at' => now()
+        ]);
+
+        return redirect()->route('colocations.index')
+                ->with('success', 'You have left the colocation.');
     }
 }

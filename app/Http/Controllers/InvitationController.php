@@ -52,15 +52,13 @@ class InvitationController extends Controller
         }
 
         ///check if already invited (pending)
-        $alreadyInvitated = $colocation->invitations()
-            ->where('email', $email)
-            ->whereNull('accepted_at')
+        $existingPending = Invitation::where('colocation_id', $colocation->id)
+            ->where('email', $request->email)
+            ->where('status', 'pending')
             ->exists();
 
-        if ($alreadyInvitated) {
-            return back()->withErrors([
-                'email' => 'This email has already been invited.'
-            ]);
+        if ($existingPending) {
+            return back()->with('error', 'A pending invitation already exists for this email.');
         }
 
         //check if the invited email is already user
@@ -135,15 +133,13 @@ class InvitationController extends Controller
     public function accept($token)
     {
         $invitation = Invitation::where('token', $token)->first();
-        
+
         if (!$invitation) {
             abort(404);
         }
 
-        //check wach deja accepted 
-        if ($invitation->accepted_at) {
-            return redirect()->route('colocations.index')
-                ->with('error', 'This invitation has already been accepted.');
+        if ($invitation->status !== 'pending') {
+            abort(403);
         }
 
         $user = auth()->user();
@@ -152,19 +148,19 @@ class InvitationController extends Controller
         $invitationEmail = $invitation->email;
         $userEmail = $user->email;
 
-        if($invitationEmail !== $userEmail){
+        if ($invitationEmail !== $userEmail) {
             return redirect()->route('colocations.index')
-                    ->with('error', 'You are not authorized to accept this invitation.');
+                ->with('error', 'You are not authorized to accept this invitation.');
         }
 
         ///check wach user 3ando active colocation
         $hasActive = $user->colocations()
-                ->wherePivotNull('left_at')
-                ->exists();
-        
-        if($hasActive){
+            ->wherePivotNull('left_at')
+            ->exists();
+
+        if ($hasActive) {
             return redirect()->route('colocations.index')
-                    ->with('error', 'You already belong to an active colocation.');
+                ->with('error', 'You already belong to an active colocation.');
         }
 
         ///attach user
@@ -174,10 +170,36 @@ class InvitationController extends Controller
 
         //Mark invitation as accepted
         $invitation->update([
+            'status' => 'accepted',
             'accepted_at' => now(),
         ]);
 
         return redirect()->route('colocations.index')
             ->with('success', 'You have successfully joined the colocation.');
+    }
+
+    public function refuse($token)
+    {
+        $invitation = Invitation::where('token', $token)->first();
+        
+        if(!$invitation){
+            abort(404);
+        }
+
+        $user = auth()->user();
+        
+        //check wach invit lhad l user
+        if($invitation->email !== $user->email){
+            return redirect()->route('colocatotions.index')
+                        ->with('error', 'hta tkatbo mn ba3d');
+        }
+
+        $invitation->update([
+            'status' => 'refused'
+        ]);
+
+        return redirect()->route('colocations.index')
+                ->with('success', 'Invitations refused successfully.');
+
     }
 }

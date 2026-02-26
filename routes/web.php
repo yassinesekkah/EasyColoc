@@ -22,6 +22,8 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::get('/colocations', [ColocationController::class, 'index'])->name('colocations.index');
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
+    //leave colocation 
+    Route::patch('/colocations/{colocation}/leave', [ColocationController::class, 'leave'])->name('colocations.leave');
 
     //Owner send Invitation
     Route::post('/invitations', [InvitationController::class, 'store'])->name('invitations.store');

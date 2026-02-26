@@ -34,9 +34,13 @@
                     <button
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Manage
                         Categories</button>
-                    <button
-                        class="px-4 py-2 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl hover:bg-red-100 transition">Cancel
-                        Colocation</button>
+                    <form method="POST" action="{{ route('colocations.leave', $activeColocation) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl hover:bg-red-100 transition">Cancel
+                            Colocation</button>
+                    </form>
                 </div>
                 {{-- @endif --}}
             </div>

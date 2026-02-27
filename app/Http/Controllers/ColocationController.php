@@ -24,6 +24,8 @@ class ColocationController extends Controller
             ->wherePivotNotNull('left_at')
             ->get();
 
+        $expenses = collect();
+
         if ($activeColocation) {
 
             //njibo members
@@ -51,6 +53,8 @@ class ColocationController extends Controller
                     ->get();
             }
 
+            
+
             $activeColocation->members = $members;
         }
 
@@ -60,7 +64,7 @@ class ColocationController extends Controller
             'expenses'
         ));
     }
-    
+
 
     public function create()
     {

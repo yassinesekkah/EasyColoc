@@ -37,7 +37,7 @@
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Manage
                         Categories
                     </button>
-    
+
 
                     <form method="POST" action="{{ route('colocations.leave', $activeColocation) }}">
                         @csrf
@@ -143,50 +143,39 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Monthly Internet</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-md">Utilities</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">John Doe</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 12, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$59.99</td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Cleaning Supplies</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-green-50 text-green-600 rounded-md">Household</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">Sarah Miller</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 10, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$22.40</td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Pizza Night</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded-md">Food</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">Mike Ross</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 08, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$45.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="p-4 bg-gray-50 text-center">
-                            <a href="#" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
-                                all expenses</a>
+                                    @forelse ($expenses as $expense)
+                                        <tr class="hover:bg-gray-50 transition">
+                                            <td class="px-6 py-4 font-medium text-gray-900">{{ $expense->title }}</td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-md">{{ $expense->category->name }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-600">{{ $expense->payer->name }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">{{ $expense->date }}</td>
+                                            <td class="px-6 py-4 text-right font-bold text-gray-900">
+                                                {{ number_format($expense->amount, 2) }} MAD</td>
+                                        </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="px-6 py-6 text-center text-gray-400">
+                                                    No expenses yet.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="p-4 bg-gray-50 text-center">
+                                <a href="#" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
+                                    all expenses</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-    </div>
+            </main>
+        </div>
 
-    @include('colocations.partials.invite-modal', ['colocation' => $activeColocation])
-    @include('colocations.partials.add-expense-modal', ['colocation' => $activeColocation])
-    @include('colocations.partials.add-category-modal', ['colocation' => $activeColocation])
-</div>
+        @include('colocations.partials.invite-modal', ['colocation' => $activeColocation])
+        @include('colocations.partials.add-expense-modal', ['colocation' => $activeColocation])
+        @include('colocations.partials.add-category-modal', ['colocation' => $activeColocation])
+    </div>

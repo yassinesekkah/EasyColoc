@@ -39,7 +39,7 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::post('/colocations/{colocation}/categories',[CategoryController::class, 'store'])->name('categories.store');
 
     ///add expense
-    Route::post('/colocations/{colocacation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::post('/colocations/{colocation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
 });
 
 require __DIR__ . '/auth.php';

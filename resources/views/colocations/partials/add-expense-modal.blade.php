@@ -10,7 +10,7 @@
             <h3 class="text-xl font-bold text-gray-800">Add New Expense</h3>
         </div>
 
-        <form action="{{ route('expenses.store', $activeColocation->id) }}" 
+        <form action="{{ route('expenses.store', $activeColocation) }}" 
               method="POST" 
               class="p-6 space-y-4">
             @csrf

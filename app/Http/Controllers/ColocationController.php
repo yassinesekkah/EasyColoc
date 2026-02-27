@@ -63,6 +63,7 @@ class ColocationController extends Controller
 
         return redirect()->route('colocations.index')
             ->with('success', 'Colocation created successfully');
+
     }
 
     public function leave(Colocation $colocation)

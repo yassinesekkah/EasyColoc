@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColocationController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +36,10 @@ Route::middleware(['auth', 'banned'])->group(function () {
     // user cancel invitation
     Route::patch('/invitations/{token}/refuse', [InvitationController::class, 'refuse'])->name('invitations.refuse');
 
+    Route::post('/colocations/{colocation}/categories',[CategoryController::class, 'store'])->name('categories.store');
+
+    ///add expense
+    Route::post('/colocations/{colocacation}/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
 });
 
 require __DIR__ . '/auth.php';

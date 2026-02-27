@@ -59,4 +59,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Invitation::class, 'invited_by');
     }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
+    public function expenseShares()
+    {
+        return $this->hasMany(ExpenseShare::class);
+    }
 }

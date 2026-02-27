@@ -15,7 +15,7 @@
                                         class="font-bold text-gray-700">98%</span></span>
                             </div>
                         </div>
-                        <button
+                        <button id="openExpenseModalBtn"
                             class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition shadow-md shadow-indigo-200">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -30,10 +30,15 @@
                 <div class="flex flex-wrap gap-3">
                     <button @click="open = true"
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Invite
-                        Member</button>
-                    <button
+                        Member
+                    </button>
+
+                    <button id="openCategoryModalBtn"
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Manage
-                        Categories</button>
+                        Categories
+                    </button>
+    
+
                     <form method="POST" action="{{ route('colocations.leave', $activeColocation) }}">
                         @csrf
                         @method('PATCH')
@@ -182,4 +187,6 @@
     </div>
 
     @include('colocations.partials.invite-modal', ['colocation' => $activeColocation])
+    @include('colocations.partials.add-expense-modal', ['colocation' => $activeColocation])
+    @include('colocations.partials.add-category-modal', ['colocation' => $activeColocation])
 </div>

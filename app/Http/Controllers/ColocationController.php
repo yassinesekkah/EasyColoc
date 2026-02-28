@@ -7,12 +7,13 @@ use App\Models\colocation;
 use App\Models\Colocation as ModelsColocation;
 use App\Models\Expense;
 use App\Models\ExpenseShare;
+use App\Services\SettlementService;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
 
 class ColocationController extends Controller
 {
-    public function index()
+    public function index(SettlementService $settlementService)
     {
         $user = auth()->user();
 
@@ -20,9 +21,15 @@ class ColocationController extends Controller
             ->wherePivotNull('left_at')
             ->first();
 
+            
+
         $pastColocations = $user->colocations()
             ->wherePivotNotNull('left_at')
             ->get();
+
+        $expenses = collect();
+        $settlements = collect();
+        
 
         if ($activeColocation) {
 
@@ -44,12 +51,15 @@ class ColocationController extends Controller
                     ->sum('share_amount');
 
                 $member->balance = $totalPaid - $totalShare;
+            }
 
-                $expenses = Expense::with(['payer', 'category'])
+            ///calcule dyal settlemets 
+            $settlements = $settlementService->calculate($members);
+
+            $expenses = Expense::with(['payer', 'category'])
                     ->where('colocation_id', $activeColocation->id)
                     ->latest()
                     ->get();
-            }
 
             $activeColocation->members = $members;
         }
@@ -57,10 +67,11 @@ class ColocationController extends Controller
         return view('colocations.index', compact(
             'activeColocation',
             'pastColocations',
-            'expenses'
+            'expenses',
+             'settlements'
         ));
     }
-    
+
 
     public function create()
     {

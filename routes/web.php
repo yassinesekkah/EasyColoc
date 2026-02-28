@@ -22,6 +22,7 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/colocations', [ColocationController::class, 'index'])->name('colocations.index');
+    
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
     //leave colocation 

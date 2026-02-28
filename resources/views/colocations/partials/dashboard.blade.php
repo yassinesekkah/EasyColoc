@@ -1,3 +1,4 @@
+@php $currentUserId = auth()->id(); @endphp
 <div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
     <div class="min-h-screen bg-gray-50 font-sans antialiased">
 
@@ -37,7 +38,7 @@
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Manage
                         Categories
                     </button>
-    
+
 
                     <form method="POST" action="{{ route('colocations.leave', $activeColocation) }}">
                         @csrf
@@ -91,37 +92,71 @@
                             <h3 class="font-bold text-gray-900">Settlements</h3>
                         </div>
                         <ul class="divide-y divide-gray-50">
-                            <li class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-sm">
-                                            <p class="font-semibold text-gray-900 leading-none">Sarah Miller</p>
-                                            <p class="text-xs text-gray-500 mt-1">owes you</p>
+
+                            @forelse($settlements as $settlement)
+
+                                @if ($settlement['from']->id == $currentUserId || $settlement['to']->id == $currentUserId)
+                                    <li class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="text-sm">
+
+                                                    @if ($settlement['from']->id == $currentUserId)
+                                                      
+                                                        <p class="font-semibold text-gray-900 leading-none">You</p>
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            owe {{ $settlement['to']->name }}
+                                                        </p>
+                                                    @else
+                                                    
+                                                        <p class="font-semibold text-gray-900 leading-none">
+                                                            {{ $settlement['from']->name }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            owes you
+                                                        </p>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+
+                                            <span
+                                                class="text-lg font-bold 
+                    @if ($settlement['from']->id == $currentUserId) text-red-600 
+                    @else 
+                        text-indigo-600 @endif">
+
+                                                ${{ number_format($settlement['amount'], 2) }}
+
+                                            </span>
                                         </div>
-                                    </div>
-                                    <span class="text-lg font-bold text-indigo-600">$45.00</span>
-                                </div>
-                                <button
-                                    class="w-full py-2 bg-gray-50 text-indigo-600 text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 hover:text-white transition">
-                                    Mark as Paid
-                                </button>
-                            </li>
-                            <li class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-sm">
-                                            <p class="font-semibold text-gray-900 leading-none">You</p>
-                                            <p class="text-xs text-gray-500 mt-1">owe Mike Ross</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-lg font-bold text-red-600">$12.50</span>
-                                </div>
-                                <button
-                                    class="w-full py-2 bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-widest rounded-lg cursor-not-allowed"
-                                    disabled>
-                                    Awaiting Approval
-                                </button>
-                            </li>
+
+                                        @if ($settlement['from']->id == $currentUserId)
+                                            {{--  debtor --}}
+                                            <button
+                                                class="w-full py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition">
+                                                Mark as Paid
+                                            </button>
+                                        @else
+                                            {{--  creditor --}}
+                                            <button
+                                                class="w-full py-2 bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-widest rounded-lg cursor-not-allowed"
+                                                disabled>
+                                                Awaiting Payment
+                                            </button>
+                                        @endif
+
+                                    </li>
+                                @endif
+
+                            @empty
+
+                                <li class="p-6 text-center text-gray-400">
+                                    No settlements needed.
+                                </li>
+
+                            @endforelse
+
                         </ul>
                     </div>
                 </div>
@@ -143,36 +178,25 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Monthly Internet</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-md">Utilities</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">John Doe</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 12, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$59.99</td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Cleaning Supplies</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-green-50 text-green-600 rounded-md">Household</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">Sarah Miller</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 10, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$22.40</td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-50 transition">
-                                        <td class="px-6 py-4 font-medium text-gray-900">Pizza Night</td>
-                                        <td class="px-6 py-4">
-                                            <span
-                                                class="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded-md">Food</span>
-                                        </td>
-                                        <td class="px-6 py-4 text-sm text-gray-600">Mike Ross</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">Oct 08, 2023</td>
-                                        <td class="px-6 py-4 text-right font-bold text-gray-900">$45.00</td>
-                                    </tr>
+                                    @forelse ($expenses as $expense)
+                                        <tr class="hover:bg-gray-50 transition">
+                                            <td class="px-6 py-4 font-medium text-gray-900">{{ $expense->title }}</td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-md">{{ $expense->category->name }}</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-600">{{ $expense->payer->name }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">{{ $expense->date }}</td>
+                                            <td class="px-6 py-4 text-right font-bold text-gray-900">
+                                                {{ number_format($expense->amount, 2) }} MAD</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-6 text-center text-gray-400">
+                                                No expenses yet.
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>

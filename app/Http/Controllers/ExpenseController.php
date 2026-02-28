@@ -73,7 +73,7 @@ class ExpenseController extends Controller
         }
 
         return redirect()
-            ->route('colocations.index', $colocation)
+            ->route('colocations.index')
             ->with('success', 'Expense added successfully.');
         
     }

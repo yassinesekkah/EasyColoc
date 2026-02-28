@@ -1,3 +1,4 @@
+@php $currentUserId = auth()->id(); @endphp
 <div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }">
     <div class="min-h-screen bg-gray-50 font-sans antialiased">
 
@@ -91,37 +92,71 @@
                             <h3 class="font-bold text-gray-900">Settlements</h3>
                         </div>
                         <ul class="divide-y divide-gray-50">
-                            <li class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-sm">
-                                            <p class="font-semibold text-gray-900 leading-none">Sarah Miller</p>
-                                            <p class="text-xs text-gray-500 mt-1">owes you</p>
+
+                            @forelse($settlements as $settlement)
+
+                                @if ($settlement['from']->id == $currentUserId || $settlement['to']->id == $currentUserId)
+                                    <li class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="text-sm">
+
+                                                    @if ($settlement['from']->id == $currentUserId)
+                                                      
+                                                        <p class="font-semibold text-gray-900 leading-none">You</p>
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            owe {{ $settlement['to']->name }}
+                                                        </p>
+                                                    @else
+                                                    
+                                                        <p class="font-semibold text-gray-900 leading-none">
+                                                            {{ $settlement['from']->name }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            owes you
+                                                        </p>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+
+                                            <span
+                                                class="text-lg font-bold 
+                    @if ($settlement['from']->id == $currentUserId) text-red-600 
+                    @else 
+                        text-indigo-600 @endif">
+
+                                                ${{ number_format($settlement['amount'], 2) }}
+
+                                            </span>
                                         </div>
-                                    </div>
-                                    <span class="text-lg font-bold text-indigo-600">$45.00</span>
-                                </div>
-                                <button
-                                    class="w-full py-2 bg-gray-50 text-indigo-600 text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-600 hover:text-white transition">
-                                    Mark as Paid
-                                </button>
-                            </li>
-                            <li class="p-6">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="text-sm">
-                                            <p class="font-semibold text-gray-900 leading-none">You</p>
-                                            <p class="text-xs text-gray-500 mt-1">owe Mike Ross</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-lg font-bold text-red-600">$12.50</span>
-                                </div>
-                                <button
-                                    class="w-full py-2 bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-widest rounded-lg cursor-not-allowed"
-                                    disabled>
-                                    Awaiting Approval
-                                </button>
-                            </li>
+
+                                        @if ($settlement['from']->id == $currentUserId)
+                                            {{--  debtor --}}
+                                            <button
+                                                class="w-full py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition">
+                                                Mark as Paid
+                                            </button>
+                                        @else
+                                            {{--  creditor --}}
+                                            <button
+                                                class="w-full py-2 bg-gray-50 text-gray-400 text-xs font-bold uppercase tracking-widest rounded-lg cursor-not-allowed"
+                                                disabled>
+                                                Awaiting Payment
+                                            </button>
+                                        @endif
+
+                                    </li>
+                                @endif
+
+                            @empty
+
+                                <li class="p-6 text-center text-gray-400">
+                                    No settlements needed.
+                                </li>
+
+                            @endforelse
+
                         </ul>
                     </div>
                 </div>
@@ -155,27 +190,27 @@
                                             <td class="px-6 py-4 text-right font-bold text-gray-900">
                                                 {{ number_format($expense->amount, 2) }} MAD</td>
                                         </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="5" class="px-6 py-6 text-center text-gray-400">
-                                                    No expenses yet.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="p-4 bg-gray-50 text-center">
-                                <a href="#" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
-                                    all expenses</a>
-                            </div>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="px-6 py-6 text-center text-gray-400">
+                                                No expenses yet.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-gray-50 text-center">
+                            <a href="#" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
+                                all expenses</a>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
-
-        @include('colocations.partials.invite-modal', ['colocation' => $activeColocation])
-        @include('colocations.partials.add-expense-modal', ['colocation' => $activeColocation])
-        @include('colocations.partials.add-category-modal', ['colocation' => $activeColocation])
+            </div>
+        </main>
     </div>
+
+    @include('colocations.partials.invite-modal', ['colocation' => $activeColocation])
+    @include('colocations.partials.add-expense-modal', ['colocation' => $activeColocation])
+    @include('colocations.partials.add-category-modal', ['colocation' => $activeColocation])
+</div>

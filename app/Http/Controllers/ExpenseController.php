@@ -9,6 +9,28 @@ use Illuminate\Http\Request;
 
 class ExpenseController extends Controller
 {
+    public function index(Colocation $colocation)
+    {
+        $user = auth()->user();
+
+        $isActive = $colocation->users()
+            ->where('users.id', $user->id)
+            ->wherePivotNull('left_at')
+            ->exists();
+
+        if (!$isActive) {
+            abort(403);
+        }
+
+        $expenses = Expense::with(['payer', 'category'])
+            ->where('colocation_id', $colocation->id)
+            ->latest()
+            ->paginate(10);
+
+        return view('expenses.index', compact('colocation', 'expenses'));
+    }
+
+
     public function store(Request $request, $colocationId)
     {
         $user = auth()->user();
@@ -17,11 +39,11 @@ class ExpenseController extends Controller
 
         //check wach user active fel colocation
         $isActive = $colocation->users()
-                ->where('users.id', $user->id)
-                ->wherePivotNull('left_at')
-                ->exists();
+            ->where('users.id', $user->id)
+            ->wherePivotNull('left_at')
+            ->exists();
 
-        if(!$isActive){
+        if (!$isActive) {
             abort(403);
         }
 
@@ -38,7 +60,7 @@ class ExpenseController extends Controller
             ->where('categories.id', $validated['category_id'])
             ->first();
 
-        if(!$category){
+        if (!$category) {
             abort(403);
         }
 
@@ -54,9 +76,9 @@ class ExpenseController extends Controller
 
         ///njibo active members
         $activeMembers = $colocation->users()
-                ->wherePivotNull('left_at')
-                ->get();
-        
+            ->wherePivotNull('left_at')
+            ->get();
+
         ///n7asbohom
         $count = $activeMembers->count();
 
@@ -64,7 +86,7 @@ class ExpenseController extends Controller
         $share = round($validated['amount'] / $count, 2);
 
         /// n insirtiw kol member chhal khaso ykhales
-        foreach($activeMembers as $member){
+        foreach ($activeMembers as $member) {
             ExpenseShare::create([
                 'expense_id' => $expense->id,
                 'user_id' => $member->id,
@@ -75,6 +97,5 @@ class ExpenseController extends Controller
         return redirect()
             ->route('colocations.index')
             ->with('success', 'Expense added successfully.');
-        
     }
 }

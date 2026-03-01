@@ -102,13 +102,11 @@
                                                 <div class="text-sm">
 
                                                     @if ($settlement['from']->id == $currentUserId)
-                                                      
                                                         <p class="font-semibold text-gray-900 leading-none">You</p>
                                                         <p class="text-xs text-gray-500 mt-1">
                                                             owe {{ $settlement['to']->name }}
                                                         </p>
                                                     @else
-                                                    
                                                         <p class="font-semibold text-gray-900 leading-none">
                                                             {{ $settlement['from']->name }}
                                                         </p>
@@ -119,12 +117,12 @@
 
                                                 </div>
                                             </div>
-
                                             <span
                                                 class="text-lg font-bold 
-                    @if ($settlement['from']->id == $currentUserId) text-red-600 
-                    @else 
-                        text-indigo-600 @endif">
+                                                      @if ($settlement['from']->id == $currentUserId) text-red-600 
+                                                          @else 
+                                                                     text-indigo-600 
+                                                         @endif">
 
                                                 ${{ number_format($settlement['amount'], 2) }}
 
@@ -133,10 +131,22 @@
 
                                         @if ($settlement['from']->id == $currentUserId)
                                             {{--  debtor --}}
-                                            <button
-                                                class="w-full py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition">
-                                                Mark as Paid
-                                            </button>
+                                            <form method="POST" action="{{ route('payments.store') }}">
+                                                @csrf
+                                                <input type="hidden" name="colocation_id"
+                                                    value="{{ $activeColocation->id }}">
+                                                <input type="hidden" name="from_user_id"
+                                                    value="{{ $settlement['from']->id }}">
+                                                <input type="hidden" name="to_user_id"
+                                                    value="{{ $settlement['to']->id }}">
+                                                <input type="hidden" name="amount"
+                                                    value="{{ $settlement['amount'] }}">
+
+                                                <button type="submit"
+                                                    class="w-full py-2 bg-indigo-600 text-white text-xs font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-700 transition">
+                                                    Mark as Paid
+                                                </button>
+                                            </form>
                                         @else
                                             {{--  creditor --}}
                                             <button
@@ -185,7 +195,8 @@
                                                 <span
                                                     class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded-md">{{ $expense->category->name }}</span>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-600">{{ $expense->payer->name }}</td>
+                                            <td class="px-6 py-4 text-sm text-gray-600">{{ $expense->payer->name }}
+                                            </td>
                                             <td class="px-6 py-4 text-sm text-gray-500">{{ $expense->date }}</td>
                                             <td class="px-6 py-4 text-right font-bold text-gray-900">
                                                 {{ number_format($expense->amount, 2) }} MAD</td>
@@ -201,7 +212,7 @@
                             </table>
                         </div>
                         <div class="p-4 bg-gray-50 text-center">
-                            <a href="#" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
+                            <a href="{{ route('expenses.index', $activeColocation) }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
                                 all expenses</a>
                         </div>
                     </div>

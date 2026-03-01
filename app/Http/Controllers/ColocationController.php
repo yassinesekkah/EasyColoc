@@ -145,7 +145,7 @@ class ColocationController extends Controller
         if ($hasDebt) {
             $debtAmount = abs($balance);
 
-            $balanceService->transferDebtToOwner($colocation, $debtAmount);
+            $balanceService->transferDebtToOwner($colocation, $user, $debtAmount);
         }
 
         // reputation

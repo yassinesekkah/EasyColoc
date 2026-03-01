@@ -8,12 +8,12 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">The Sunny Loft</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">{{auth()->user()->name}}</h1>
                             <div class="flex items-center mt-1 space-x-3">
                                 <span
                                     class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Owner</span>
                                 <span class="text-sm text-gray-500">Reputation: <span
-                                        class="font-bold text-gray-700">98%</span></span>
+                                        class="font-bold text-gray-700">{{ auth()->user()->reputation }}</span></span>
                             </div>
                         </div>
                         <button id="openExpenseModalBtn"
@@ -72,15 +72,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <p class="text-sm font-medium text-gray-500 uppercase">Total Paid</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">$1,240.00</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalPaid }} MAD</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <p class="text-sm font-medium text-gray-500 uppercase">Total Owed</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-1">$450.00</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalOwed }} MAD</p>
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <p class="text-sm font-medium text-gray-500 uppercase">Current Balance</p>
-                    <p class="text-3xl font-bold mt-1 text-green-600">+$790.00</p>
+                    <p
+                        class="text-3xl font-bold mt-1  {{ $currentBalance < 0 ? 'text-red-600' : 'text-green-600' }}">
+                        {{ number_format($currentBalance, 2) }} MAD
+                    </p>
                 </div>
             </div>
 
@@ -121,8 +124,7 @@
                                                 class="text-lg font-bold 
                                                       @if ($settlement['from']->id == $currentUserId) text-red-600 
                                                           @else 
-                                                                     text-indigo-600 
-                                                         @endif">
+                                                                     text-indigo-600 @endif">
 
                                                 ${{ number_format($settlement['amount'], 2) }}
 
@@ -212,7 +214,8 @@
                             </table>
                         </div>
                         <div class="p-4 bg-gray-50 text-center">
-                            <a href="{{ route('expenses.index', $activeColocation) }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
+                            <a href="{{ route('expenses.index', $activeColocation) }}"
+                                class="text-sm font-semibold text-indigo-600 hover:text-indigo-800">View
                                 all expenses</a>
                         </div>
                     </div>

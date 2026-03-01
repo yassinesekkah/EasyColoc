@@ -59,7 +59,7 @@ class BalanceService
         return round($totalPaid - $totalShare, 2);
     }
 
-    public function transferDebtToOwner(Colocation $colocation, float $debtAmount): void
+    public function transferDebtToOwner(Colocation $colocation, User $leavingUser, float $debtAmount): void
     {
         $owner = $colocation->users()
             ->wherePivot('role', 'owner')
@@ -72,10 +72,10 @@ class BalanceService
 
         Payment::create([
             'colocation_id' => $colocation->id,
-            'from_user_id' => $owner->id,
-            'to_user_id' => null,
-            'amount' => $debtAmount,
-            'paid_at' => now(),
+            'from_user_id'  => $leavingUser->id,
+            'to_user_id'    => $owner->id,
+            'amount'        => abs($debtAmount),
+            'paid_at'       => now(),
         ]);
     }
 

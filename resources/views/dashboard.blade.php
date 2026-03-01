@@ -32,7 +32,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <p class="text-sm font-medium text-gray-500 uppercase">Total Paid</p>
-                <p class="text-3xl font-bold text-gray-900 mt-1">$1,240.00</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{$currentBalance}} MAD</p>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <p class="text-sm font-medium text-gray-500 uppercase">Total Owed</p>

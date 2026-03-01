@@ -9,6 +9,7 @@ use App\Models\Expense;
 use App\Models\ExpenseShare;
 use App\Models\Payment;
 use App\Services\BalanceService;
+use App\Services\ReputationService;
 use App\Services\SettlementService;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Http\Request;
@@ -29,7 +30,9 @@ class ColocationController extends Controller
 
         $expenses = collect();
         $settlements = collect();
-
+        $currentBalance = 0;
+        $totalPaid = 0;
+        $totalOwed = 0;
 
         if ($activeColocation) {
 
@@ -51,13 +54,24 @@ class ColocationController extends Controller
                 ->get();
 
             $activeColocation->members = $members;
+
+            $summary = $balanceService
+                ->getUserFinancialSummary($activeColocation, $user);
+
+            $currentBalance = $summary['balance'];
+            $totalPaid = $summary['totalPaid'];
+            $totalOwed = $summary['totalShare'];
         }
+
 
         return view('colocations.index', compact(
             'activeColocation',
             'pastColocations',
             'expenses',
-            'settlements'
+            'settlements',
+            'currentBalance',
+            'totalPaid',
+            'totalOwed'
         ));
     }
 
@@ -99,8 +113,11 @@ class ColocationController extends Controller
             ->with('success', 'Colocation created successfully');
     }
 
-    public function leave(Colocation $colocation)
-    {
+    public function leave(
+        Colocation $colocation,
+        ReputationService $reputationService,
+        BalanceService $balanceService
+    ) {
         $user = auth()->user();
 
         $membership = $user->colocations()
@@ -119,6 +136,20 @@ class ColocationController extends Controller
             return redirect()->back()
                 ->with('error', 'Owner cannot leave the colocation.');
         };
+
+        //nhasbo balance
+        $balance = $balanceService->calculateSingle($colocation, $user);
+
+        $hasDebt = $balance < 0;
+
+        if ($hasDebt) {
+            $debtAmount = abs($balance);
+
+            $balanceService->transferDebtToOwner($colocation, $debtAmount);
+        }
+
+        // reputation
+        $reputationService->handle($user, $hasDebt);
 
         $user->colocations()->updateExistingPivot($colocation->id, [
             'left_at' => now()

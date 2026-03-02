@@ -1,20 +1,5 @@
 <div class="min-h-screen bg-gray-50 font-sans antialiased pb-12">
 
-    <nav class="bg-white border-b border-gray-200">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            <span class="text-xl font-black tracking-tight text-indigo-600">EasyColoc</span>
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold text-gray-900 leading-none">Yassine Karim</p>
-                    <p class="text-[10px] text-gray-400 uppercase mt-1">Guest Account</p>
-                </div>
-                <div class="w-10 h-10 bg-gray-100 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-xs font-bold text-gray-500">
-                    YK
-                </div>
-            </div>
-        </div>
-    </nav>
-
     <main class="max-w-5xl mx-auto px-4 py-10">
 
         <div class="bg-white rounded-[2rem] p-8 md:p-12 text-center shadow-sm border border-gray-100 mb-12">
@@ -30,9 +15,6 @@
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <button class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-lg shadow-indigo-100">
                     Create New Colocation
-                </button>
-                <button class="w-full sm:w-auto px-8 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition">
-                    Join via Invitation
                 </button>
             </div>
         </div>

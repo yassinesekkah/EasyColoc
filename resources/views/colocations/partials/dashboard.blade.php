@@ -8,10 +8,10 @@
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex-1">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">{{auth()->user()->name}}</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">{{ auth()->user()->name }}</h1>
                             <div class="flex items-center mt-1 space-x-3">
                                 <span
-                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Owner</span>
+                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{{$isOwner? 'Owner' : 'Member'}} </span>
                                 <span class="text-sm text-gray-500">Reputation: <span
                                         class="font-bold text-gray-700">{{ auth()->user()->reputation }}</span></span>
                             </div>
@@ -27,12 +27,14 @@
                     </div>
                 </div>
 
-                {{-- @if ($userIsOwner) --}}
+
                 <div class="flex flex-wrap gap-3">
-                    <button @click="open = true"
-                        class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Invite
-                        Member
-                    </button>
+                    @if ($isOwner)
+                        <button @click="open = true"
+                            class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Invite
+                            Member
+                        </button>
+                    @endif
 
                     <button id="openCategoryModalBtn"
                         class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-xl hover:bg-gray-50 transition">Manage
@@ -48,7 +50,7 @@
                             Colocation</button>
                     </form>
                 </div>
-                {{-- @endif --}}
+
             </div>
 
             @if (session('invite_link'))
@@ -80,8 +82,7 @@
                 </div>
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                     <p class="text-sm font-medium text-gray-500 uppercase">Current Balance</p>
-                    <p
-                        class="text-3xl font-bold mt-1  {{ $currentBalance < 0 ? 'text-red-600' : 'text-green-600' }}">
+                    <p class="text-3xl font-bold mt-1  {{ $currentBalance < 0 ? 'text-red-600' : 'text-green-600' }}">
                         {{ number_format($currentBalance, 2) }} MAD
                     </p>
                 </div>

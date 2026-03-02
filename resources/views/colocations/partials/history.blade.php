@@ -13,9 +13,10 @@
                 You aren't currently registered in any house. You can start a new one or join your roommates if they've already invited you.
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button class="w-full sm:w-auto px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition shadow-lg shadow-indigo-100">
-                    Create New Colocation
-                </button>
+                <a href="{{ route('colocations.create') }}"
+                    class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-1">
+                    Create Colocation
+                </a>
             </div>
         </div>
 

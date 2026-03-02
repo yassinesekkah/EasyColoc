@@ -36,16 +36,11 @@
                     class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-1">
                     Create Colocation
                 </a>
-
-                <button
-                    class="w-full bg-white border-2 border-gray-100 hover:border-indigo-100 hover:bg-indigo-50/30 text-gray-700 font-bold py-4 rounded-2xl transition-all">
-                    Join via Invitation
-                </button>
             </div>
 
             <div class="mt-8 pt-8 border-t border-gray-50">
                 <p class="text-xs text-gray-400 font-medium italic">
-                    Tip: Ask your roommate for the 6-digit invite code.
+                    Tip: Ask your roommate for the invitation link.
                 </p>
             </div>
         </div>

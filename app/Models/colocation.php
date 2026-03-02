@@ -34,4 +34,5 @@ class Colocation extends Model
     {
         return $this->hasMany(Payment::class);
     }
+    
 }

@@ -34,7 +34,7 @@
                             <td class="px-6 py-4">{{ $expense->payer->name }}</td>
                             <td class="px-6 py-4">{{ $expense->date }}</td>
                             <td class="px-6 py-4 text-right font-bold">
-                                ${{ number_format($expense->amount, 2) }}
+                                {{ number_format($expense->amount, 2) }}MAD
                             </td>
                         </tr>
                     @endforeach

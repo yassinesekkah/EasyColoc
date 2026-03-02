@@ -11,7 +11,7 @@
                             <h1 class="text-2xl font-bold text-gray-900">{{ auth()->user()->name }}</h1>
                             <div class="flex items-center mt-1 space-x-3">
                                 <span
-                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Owner</span>
+                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{{$isOwner? 'Owner' : 'Member'}} </span>
                                 <span class="text-sm text-gray-500">Reputation: <span
                                         class="font-bold text-gray-700">{{ auth()->user()->reputation }}</span></span>
                             </div>

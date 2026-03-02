@@ -9,6 +9,7 @@ use App\Models\Expense;
 use App\Models\ExpenseShare;
 use App\Models\Payment;
 use App\Services\BalanceService;
+use App\Services\DefaultCategoryService;
 use App\Services\ReputationService;
 use App\Services\SettlementService;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -33,6 +34,7 @@ class ColocationController extends Controller
         $currentBalance = 0;
         $totalPaid = 0;
         $totalOwed = 0;
+        $isOwner = false;
 
         if ($activeColocation) {
 
@@ -61,6 +63,11 @@ class ColocationController extends Controller
             $currentBalance = $summary['balance'];
             $totalPaid = $summary['totalPaid'];
             $totalOwed = $summary['totalShare'];
+
+            $isOwner = $activeColocation->users()
+                ->where('user_id', auth()->id())
+                ->wherePivot('role', 'owner')
+                ->exists();
         }
 
 
@@ -71,7 +78,8 @@ class ColocationController extends Controller
             'settlements',
             'currentBalance',
             'totalPaid',
-            'totalOwed'
+            'totalOwed',
+            'isOwner'
         ));
     }
 
@@ -81,7 +89,7 @@ class ColocationController extends Controller
         return view('colocations.create');
     }
 
-    public function store(StoreColocationRequest $request)
+    public function store(StoreColocationRequest $request, DefaultCategoryService $defaultCategoryService)
     {
         //check if user already has active colocation
         $user = auth()->user();
@@ -107,6 +115,9 @@ class ColocationController extends Controller
         $colocation->users()->attach($user->id, [
             'role' => 'owner',
         ]);
+
+        //create default categories
+        $defaultCategoryService->createForColocation($colocation);
 
 
         return redirect()->route('colocations.index')

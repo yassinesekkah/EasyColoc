@@ -11,7 +11,8 @@
                             <h1 class="text-2xl font-bold text-gray-900">{{ auth()->user()->name }}</h1>
                             <div class="flex items-center mt-1 space-x-3">
                                 <span
-                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{{$isOwner? 'Owner' : 'Member'}} </span>
+                                    class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{{ $isOwner ? 'Owner' : 'Member' }}
+                                </span>
                                 <span class="text-sm text-gray-500">Reputation: <span
                                         class="font-bold text-gray-700">{{ auth()->user()->reputation }}</span></span>
                             </div>
@@ -49,6 +50,15 @@
                             class="px-4 py-2 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl hover:bg-red-100 transition">Cancel
                             Colocation</button>
                     </form>
+
+                    @auth
+                        @if (auth()->user()->is_admin)
+                            <a href="{{ route('admin.index') }}"
+                                class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700">
+                                Admin Panel
+                            </a>
+                        @endif
+                    @endauth
                 </div>
 
             </div>

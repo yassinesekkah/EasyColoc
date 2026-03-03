@@ -4,8 +4,7 @@
 
             {{-- Logo --}}
             <div class="flex items-center">
-                <a href="{{ route('colocations.index') }}"
-                   class="text-2xl font-bold text-indigo-600 tracking-tight">
+                <a href="{{ route('colocations.index') }}" class="text-2xl font-bold text-indigo-600 tracking-tight">
                     EasyColoc
                 </a>
             </div>
@@ -17,11 +16,9 @@
                     <span class="text-sm font-semibold text-gray-700">
                         {{ auth()->user()->name }}
                     </span>
-                    <span class="text-xs text-gray-500 uppercase tracking-wider">
-                        {{ $userRole ?? 'Member' }}
-                    </span>
-                </div>
 
+                </div>
+                
                 {{-- Avatar Dropdown --}}
                 <div class="relative">
                     <button id="userMenuBtn"
@@ -34,8 +31,7 @@
                     <div id="userDropdown"
                         class="hidden absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
 
-                        <a href="#"
-                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 transition">
+                        <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50 transition">
                             👤 Profile
                         </a>
 
@@ -52,18 +48,18 @@
             </div>
         </div>
     </div>
-</nav>  
+</nav>
 
 <script>
     const btn = document.getElementById('userMenuBtn');
     const dropdown = document.getElementById('userDropdown');
 
-    btn.addEventListener('click', function (e) {
+    btn.addEventListener('click', function(e) {
         e.stopPropagation();
         dropdown.classList.toggle('hidden');
     });
 
-    document.addEventListener('click', function (e) {
+    document.addEventListener('click', function(e) {
         if (!dropdown.contains(e.target)) {
             dropdown.classList.add('hidden');
         }

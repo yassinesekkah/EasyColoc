@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColocationController;
 use App\Http\Controllers\ExpenseController;
@@ -23,7 +24,7 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/colocations', [ColocationController::class, 'index'])->name('colocations.index');
-    
+
     Route::get('/colocations/create', [ColocationController::class, 'create'])->name('colocations.create');
     Route::post('/colocations', [ColocationController::class, 'store'])->name('colocations.store');
     //leave colocation 
@@ -38,8 +39,8 @@ Route::middleware(['auth', 'banned'])->group(function () {
     // user cancel invitation
     Route::patch('/invitations/{token}/refuse', [InvitationController::class, 'refuse'])->name('invitations.refuse');
 
-    Route::post('/colocations/{colocation}/categories',[CategoryController::class, 'store'])->name('categories.store');
-    
+    Route::post('/colocations/{colocation}/categories', [CategoryController::class, 'store'])->name('categories.store');
+
     //all expenses
     Route::get('/colocations/{colocation}/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     ///add expense
@@ -49,4 +50,11 @@ Route::middleware(['auth', 'banned'])->group(function () {
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 });
 
+Route::middleware(['auth', 'admin'])
+    
+    ->group(function () {
+        Route::get('/users', [AdminUserController::class, 'index'])->name('admin.index');
+
+        Route::patch('/users/{user}/ban', [AdminUserController::class, 'toggleBan'])->name('admin.toggleBan');
+    });
 require __DIR__ . '/auth.php';

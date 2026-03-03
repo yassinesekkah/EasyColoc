@@ -28,6 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = auth()->user();
+
+        //check is_banned
+        if ($user->is_banned) {
+            auth()->logout();
+
+            return back()->withErrors([
+                'email' => 'Your account has been banned.'
+            ]);
+        }
+
         return redirect()->intended(route('colocations.index', absolute: false));
     }
 
